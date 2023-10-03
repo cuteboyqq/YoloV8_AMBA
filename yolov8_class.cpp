@@ -17,6 +17,14 @@ YoloV8_Class::YoloV8_Class(int argc, char **argv, live_params_t *params, live_ct
 	rval = YoloV8_Class::live_init(live_ctx, params);
 };
 
+int YoloV8_Class::test_yolov8_init(int argc, char **argv, live_params_t *params, live_ctx_t *live_ctx)
+{
+    int rval = 0;
+	rval = YoloV8_Class::init_param(argc, argv, params);
+	rval = YoloV8_Class::live_init(live_ctx,params);
+	return rval;
+}
+
 int YoloV8_Class::init(int argc, char **argv, live_params_t *params, live_ctx_t *live_ctx)
 {
 	int rval = 0;
@@ -490,6 +498,20 @@ int YoloV8_Class::live_init(live_ctx_t *live_ctx, live_params_t *params)
 		}
 	} while (0);
 	return rval;
+}
+int YoloV8_Class::test_yolov8_run(live_ctx_t *live_ctx, live_params_t *params)
+{
+	int rval = EA_SUCCESS;
+	int sig_flag = 0;
+	do {
+		if (params->mode == RUN_DUMMY_MODE) {
+			sig_flag = YoloV8_Class::live_run_loop_dummy(live_ctx, params); //RVAL_OK
+		} else {
+			sig_flag = YoloV8_Class::live_run_loop_without_dummy(live_ctx, params); //RVAL_OK
+		}
+	} while (0);
+	// return rval;
+	return sig_flag;
 };
 
 void YoloV8_Class::cv_env_deinit(live_ctx_t *live_ctx)
@@ -571,7 +593,8 @@ int YoloV8_Class::live_run_loop_dummy(live_ctx_t *live_ctx, live_params_t *param
 		}
 	} while (0);
 
-	return rval;
+	//return rval;
+	return live_ctx->sig_flag;
 };
 
 int YoloV8_Class::live_convert_yuv_data_to_bgr_data_for_postprocess(live_params_t *params, img_set_t *img_set)
@@ -639,7 +662,7 @@ int YoloV8_Class::live_run_loop_without_dummy(live_ctx_t *live_ctx, live_params_
 		}
 		if (params->mode == RUN_LIVE_MODE &&
 			params->enable_hold_img_flag == IN_SRC_ON) {
-			RVAL_OK(live_convert_yuv_data_to_bgr_data_for_postprocess(params, img_set));
+			RVAL_OK(YoloV8_Class::live_convert_yuv_data_to_bgr_data_for_postprocess(params, img_set));
 		}
 		vp_output->arg = img_set;
 		EA_MEASURE_TIME_START();
@@ -667,22 +690,25 @@ int YoloV8_Class::live_run_loop_without_dummy(live_ctx_t *live_ctx, live_params_
 		queue = post_thread_queue(&live_ctx->thread_ctx);
 		RVAL_OK(ea_queue_en(queue, vp_output));
 
-	} while (live_ctx->sig_flag == 0);
+	} while (0);
 
-	return rval;
+	// return rval;
+	return live_ctx->sig_flag;
 };
 
 int YoloV8_Class::live_run_loop(live_ctx_t *live_ctx, live_params_t *params)
 {
 	int rval = EA_SUCCESS;
+	int sig_flag = 0;
 	do {
 		if (params->mode == RUN_DUMMY_MODE) {
-			RVAL_OK(YoloV8_Class::live_run_loop_dummy(live_ctx, params));
+			sig_flag = YoloV8_Class::live_run_loop_dummy(live_ctx, params); //RVAL_OK
 		} else {
-			RVAL_OK(YoloV8_Class::live_run_loop_without_dummy(live_ctx, params));
+			sig_flag = YoloV8_Class::live_run_loop_without_dummy(live_ctx, params); //RVAL_OK
 		}
 	} while (0);
-	return rval;
+	// return rval;
+	return sig_flag;
 };
 
 

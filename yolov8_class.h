@@ -16,6 +16,11 @@ class YoloV8_Class
                         live_ctx_t *live_ctx);
 
         // ~YoloV8_Class();
+        int test_yolov8_init(int argc, 
+                char **argv, 
+                live_params_t *params,
+                live_ctx_t *live_ctx);
+
         int init(int argc, 
                 char **argv, 
                 live_params_t *params,
@@ -29,6 +34,11 @@ class YoloV8_Class
 
         int live_init(live_ctx_t *live_ctx, 
                     live_params_t *params);
+
+
+        int test_yolov8_run(live_ctx_t *live_ctx, 
+                        live_params_t *params);
+
 
         int live_run_loop(live_ctx_t *live_ctx, 
                         live_params_t *params);

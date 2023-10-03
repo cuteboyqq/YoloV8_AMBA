@@ -21,13 +21,14 @@ int main(int argc, char **argv)
 
 	memset(&live_ctx, 0, sizeof(live_ctx_t));
 
+	int sig_flag = 0;
 	YoloV8_Class yolov8;
+	yolov8.test_yolov8_init(argc, argv, &params, &live_ctx);
+
 	do {
-		// yolov8.init_param(argc, argv, &params); //RVAL_OK
-		// yolov8.live_init(&live_ctx, &params); //RVAL_OK
-		yolov8.init(argc, argv, &params, &live_ctx);
-		yolov8.live_run_loop(&live_ctx, &params); //RVAL_OK
-	} while (0);
+		sig_flag = yolov8.test_yolov8_run(&live_ctx, &params); //RVAL_OK
+	} while (sig_flag==0);
+
 	yolov8.live_deinit(&live_ctx, &params);
 
 	return rval;
