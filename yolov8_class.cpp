@@ -4,17 +4,27 @@
  ******************************************************************************/
 #include "yolov8_class.h"
 
+
 YoloV8_Class::YoloV8_Class()
 {
 
 };
 
+YoloV8_Class::YoloV8_Class(int argc, char **argv, live_params_t *params, live_ctx_t *live_ctx)
+{
+	int rval = 0;
+	rval = YoloV8_Class::init_param(argc, argv, params);
+	rval = YoloV8_Class::live_init(live_ctx, params);
+};
 
-// YoloV8_Class::~YoloV8_Class()
-// {
+int YoloV8_Class::init(int argc, char **argv, live_params_t *params, live_ctx_t *live_ctx)
+{
+	int rval = 0;
+	rval = YoloV8_Class::init_param(argc, argv, params);
+	rval = YoloV8_Class::live_init(live_ctx,params);
+	return rval;
+};
 
-
-// }
 
 int YoloV8_Class::parse_param(int argc, char **argv, live_params_t *params)
 {

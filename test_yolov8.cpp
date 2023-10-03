@@ -23,8 +23,9 @@ int main(int argc, char **argv)
 
 	YoloV8_Class yolov8;
 	do {
-		yolov8.init_param(argc, argv, &params); //RVAL_OK
-		yolov8.live_init(&live_ctx, &params); //RVAL_OK
+		// yolov8.init_param(argc, argv, &params); //RVAL_OK
+		// yolov8.live_init(&live_ctx, &params); //RVAL_OK
+		yolov8.init(argc, argv, &params, &live_ctx);
 		yolov8.live_run_loop(&live_ctx, &params); //RVAL_OK
 	} while (0);
 	yolov8.live_deinit(&live_ctx, &params);

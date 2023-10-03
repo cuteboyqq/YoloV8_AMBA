@@ -7,8 +7,21 @@
 class YoloV8_Class
 {
     public:
+        
         YoloV8_Class();
+
+        YoloV8_Class(int argc, 
+                        char **argv, 
+                        live_params_t *params,
+                        live_ctx_t *live_ctx);
+
         // ~YoloV8_Class();
+        int init(int argc, 
+                char **argv, 
+                live_params_t *params,
+                live_ctx_t *live_ctx);
+
+
 
         int init_param(int argc, 
                         char **argv, 
