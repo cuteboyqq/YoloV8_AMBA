@@ -512,6 +512,34 @@ int YoloV8_Class::test_yolov8_run(live_ctx_t *live_ctx, live_params_t *params)
 	} while (0);
 	// return rval;
 	return sig_flag;
+}
+int YoloV8_Class::test_yolov8_tracker(live_ctx_t *live_ctx, live_params_t *params)
+{
+ 	yolov8_result_t *yolov8_result = (yolov8_result_t *)live_ctx->thread_ctx.thread->nn_arm_ctx.result;
+	int i = 0;
+	for ( i = 0; i < yolov8_result->num; i++)
+	{
+		EA_LOG_DEBUG("num:%d, id:%d, x1:%f, y1:%f, x2:%f, y2:%f, score:%f, label:%s\n",
+		yolov8_result->num,
+		yolov8_result->bbox[i].id,
+		yolov8_result->bbox[i].x_start,
+		yolov8_result->bbox[i].y_start,
+		yolov8_result->bbox[i].x_end,
+		yolov8_result->bbox[i].y_end,
+		yolov8_result->bbox[i].score,
+		yolov8_result->bbox[i].label);
+		
+		printf("num:%d, id:%d, x1:%f, y1:%f, x2:%f, y2:%f, score:%f, label:%s\n",
+		yolov8_result->num,
+		yolov8_result->bbox[i].id,
+		yolov8_result->bbox[i].x_start,
+		yolov8_result->bbox[i].y_start,
+		yolov8_result->bbox[i].x_end,
+		yolov8_result->bbox[i].y_end,
+		yolov8_result->bbox[i].score,
+		yolov8_result->bbox[i].label);
+	}
+    return 0;
 };
 
 void YoloV8_Class::cv_env_deinit(live_ctx_t *live_ctx)

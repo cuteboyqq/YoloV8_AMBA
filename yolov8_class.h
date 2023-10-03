@@ -40,6 +40,10 @@ class YoloV8_Class
                         live_params_t *params);
 
 
+        int test_yolov8_tracker(live_ctx_t *live_ctx, 
+                        live_params_t *params);
+
+
         int live_run_loop(live_ctx_t *live_ctx, 
                         live_params_t *params);
 
@@ -50,7 +54,7 @@ class YoloV8_Class
                         live_params_t *params);
 
 
-	private:
+     private:
         int parse_param(int argc, char **argv, 
                         live_params_t *params);
 

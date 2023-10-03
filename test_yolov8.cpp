@@ -27,6 +27,7 @@ int main(int argc, char **argv)
 
 	do {
 		sig_flag = yolov8.test_yolov8_run(&live_ctx, &params); //RVAL_OK
+		yolov8.test_yolov8_tracker(&live_ctx, &params);
 	} while (sig_flag==0);
 
 	yolov8.test_yolov8_deinit(&live_ctx, &params);

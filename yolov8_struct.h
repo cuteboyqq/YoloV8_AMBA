@@ -52,6 +52,62 @@ extern "C" {
 #endif
 
 
+// Get from yolov8.cpp
+
+#define YOLOV8_MAX_STR_LEN                (256)
+#define YOLOV8_MAX_COLOR_NUM              (256)
+#define YOLOV8_SEG_MAP_CLUT_NUM           (5)
+#define YOLOV8_OUTPUT0_LOCAL_NUMBER       (4)
+
+typedef struct yolov8_arm_cfg_s {
+	float conf_threshold;
+	int top_k;
+	float nms_threshold;
+	int class_num;
+	int mask_num;
+	int enable_seg;
+	int log_level;
+	int disable_fsync;
+
+	char output_0[YOLOV8_MAX_STR_LEN];
+	char output_1[YOLOV8_MAX_STR_LEN];
+} yolov8_arm_cfg_t;
+
+typedef struct yolov8_bbox_s {
+	char label[YOLOV8_MAX_STR_LEN];
+	int id;
+	float score;
+	float x_start; // normalized value
+	float y_start;
+	float x_end;
+	float y_end;
+} yolov8_bbox_t;
+
+typedef struct yolov8_result_s {
+	yolov8_bbox_t *bbox;
+	int *mask_cls_id;
+	int num;
+} yolov8_result_t;
+
+typedef struct yolov8_ctx_s {
+	ea_tensor_t *output0_tensor;
+	ea_tensor_t *output1_tensor;
+	float *x1y1x2y2score;
+	float *valid_x1y1x2y2score;
+	int *index_array;
+	int *valid_index;
+	uint8_t *mask_map;
+
+	int box_num;
+	int input_w;
+	int input_h;
+	int mask_w;
+	int mask_h;
+} yolov8_ctx_t;
+
+static yolov8_ctx_t yolov8_ctx;
+
+
 
 
 
