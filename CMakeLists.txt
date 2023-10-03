@@ -1,0 +1,152 @@
+###############################################################################
+ # ambarella/packages/eazyai/CMakeLists.txt
+ #
+ # History:
+ #  2022/08/23 - [Junshuai ZHU] create this file
+ #
+ # Copyright (c) 2022 Ambarella International LP
+ #
+ # This file and its contents ( "Software" ) are protected by intellectual
+ # property rights including, without limitation, U.S. and/or foreign
+ # copyrights. This Software is also the confidential and proprietary
+ # information of Ambarella International LP and its licensors. You may not use, reproduce,
+ # disclose, distribute, modify, or otherwise prepare derivative works of this
+ # Software or any portion thereof except pursuant to a signed license agreement
+ # or nondisclosure agreement with Ambarella International LP or its authorized affiliates.
+ # In the absence of such an agreement, you agree to promptly notify and return
+ # this Software to Ambarella International LP.
+ #
+ # This file includes sample code and is only for internal testing and evaluation.  If you
+ # distribute this sample code (whether in source, object, or binary code form), it will be
+ # without any warranty or indemnity protection from Ambarella International LP or its affiliates.
+ #
+ # THIS SOFTWARE IS PROVIDED "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES,
+ # INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF NON-INFRINGEMENT,
+ # MERCHANTABILITY, AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
+ # IN NO EVENT SHALL AMBARELLA INTERNATIONAL LP OR ITS AFFILIATES BE LIABLE FOR ANY DIRECT,
+ # INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+ # (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+ # LOSS OF USE, DATA, OR PROFITS; COMPUTER FAILURE OR MALFUNCTION; OR BUSINESS
+ # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+ # CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ # ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+ # POSSIBILITY OF SUCH DAMAGE.
+ #
+##############################################################################
+
+cmake_minimum_required (VERSION 3.0)
+set(PROJECT_NAME test_yolov8)
+project(${PROJECT_NAME})
+set(CMAKE_BUILD_TYPE "RELEASE")
+set(CMAKE_CXX_FLAGS_DEBUG "-O0 -Wall -g -ggdb -std=gnu++11 -fvisibility=hidden -fopenmp -fsanitize=address")
+set(CMAKE_CXX_FLAGS_RELEASE "-O3 -Wall -std=gnu++11 -fvisibility=hidden -fopenmp")
+
+if (EA_INC)
+	set(EA_INC_PATH ${EA_INC})
+else ()
+	set(EA_INC_PATH ${PROJECT_SOURCE_DIR}/../inc)
+endif ()
+include_directories(${EA_INC_PATH})
+if (NOT EXISTS ${EA_INC_PATH})
+	message(FATAL_ERROR "EA_INC path ${EA_INC_PATH} doesn't exist.")
+endif ()
+message(STATUS "EA_INC: ${EA_INC_PATH}")
+
+if (EA_LIB)
+	set(EA_LIB_PATH ${EA_LIB})
+else ()
+	set(EA_LIB_PATH ${PROJECT_SOURCE_DIR}/../build/libeazyai.so)
+endif ()
+if (NOT EXISTS ${EA_LIB_PATH})
+	message(FATAL_ERROR "EA_LIB path ${EA_LIB_PATH} doesn't exist.")
+endif ()
+message(STATUS "EA_LIB: ${EA_LIB_PATH}")
+
+if (LUA_INC)
+	set(LUA_INC_PATH ${LUA_INC})
+else ()
+	set(LUA_INC_PATH ${PROJECT_SOURCE_DIR}/3rd_party/lua-5.4.4/src)
+endif ()
+if (NOT (EXISTS ${LUA_INC_PATH}/lua.h AND
+	EXISTS ${LUA_INC_PATH}/lualib.h AND
+	EXISTS ${LUA_INC_PATH}/lauxlib.h AND
+	EXISTS ${LUA_INC_PATH}/liblua.a))
+	message(FATAL_ERROR "Please install lua library. For more info, user could refer to ${PROJECT_SOURCE_DIR}/3rd_party/readme.sh")
+endif ()
+message(STATUS "LUA_INC: ${LUA_INC_PATH}")
+
+if (EIGEN_INC)
+	set(EIGEN_INC_PATH ${EIGEN_INC})
+else ()
+	set(EIGEN_INC_PATH ${PROJECT_SOURCE_DIR}/3rd_party/eigen-3.4.0)
+endif ()
+if (NOT (EXISTS ${EIGEN_INC_PATH}/Eigen/Cholesky AND
+	EXISTS ${EIGEN_INC_PATH}/Eigen/Core))
+	message(FATAL_ERROR "Please download Eigen library. For more info, user could refer to ${PROJECT_SOURCE_DIR}/3rd_party/readme.sh")
+endif ()
+message(STATUS "EIGEN_INC: ${EIGEN_INC_PATH}")
+
+# Compile libeazyai_arm_postprocess
+set(EAZYAI_ARM_POSTPROCESS_LIB_NAME eazyai_arm_postprocess)
+set(EAZYAI_ARM_POSTPROCESS_INC
+	${EIGEN_INC_PATH}
+	${LUA_INC_PATH}
+	${PROJECT_SOURCE_DIR}/nn_arm_task
+	${PROJECT_SOURCE_DIR}/nn_arm_task/common
+	${PROJECT_SOURCE_DIR}/nn_arm_task/save_cvflow_out_to_file
+	${PROJECT_SOURCE_DIR}/nn_arm_task/yolov8)
+
+set(EAZYAI_ARM_POSTPROCESS_SRC
+	${PROJECT_SOURCE_DIR}/nn_arm_task/nn_arm.c
+	${PROJECT_SOURCE_DIR}/nn_arm_task/common/nn_arm_show_result.cpp
+	${PROJECT_SOURCE_DIR}/nn_arm_task/common/nn_lua.c
+	${PROJECT_SOURCE_DIR}/nn_arm_task/save_cvflow_out_to_file/save_cvflow_out_to_file.c
+	${PROJECT_SOURCE_DIR}/nn_arm_task/yolov8/yolov8.cpp)
+
+set(QRCODE_OPENCV_VERSION 3.4.3)
+if (USE_OPENCV_VERSION)
+	message(STATUS "Searching OpenCV ${USE_OPENCV_VERSION}")
+	find_package(OpenCV ${USE_OPENCV_VERSION} REQUIRED)
+else ()
+	find_package(OpenCV REQUIRED)
+endif ()
+message(STATUS "OPENCV version ${OpenCV_VERSION}")
+message(STATUS "OPENCV include ${OpenCV_INCLUDE_DIRS}")
+
+if (${QRCODE_OPENCV_VERSION} VERSION_LESS ${OpenCV_VERSION}
+	OR ${QRCODE_OPENCV_VERSION} VERSION_EQUAL ${OpenCV_VERSION})
+	message(STATUS "Found OpenCV version higher than ${QRCODE_OPENCV_VERSION}. QRCODE Enabled.")
+	# add_definitions(-DBUILD_AMBARELLA_CONFIG_EAZYAI_NN_ARM_TASK_QRCODE)
+	# list(APPEND EAZYAI_ARM_POSTPROCESS_INC ${PROJECT_SOURCE_DIR}/nn_arm_task/qrcode)
+	# list(APPEND EAZYAI_ARM_POSTPROCESS_SRC ${PROJECT_SOURCE_DIR}/nn_arm_task/qrcode/qrcode.cpp)
+else ()
+	message(STATUS "Found OpenCV version lower than ${QRCODE_OPENCV_VERSION}. QRCODE Disabled.")
+endif ()
+
+add_library(${EAZYAI_ARM_POSTPROCESS_LIB_NAME} STATIC ${EAZYAI_ARM_POSTPROCESS_SRC})
+target_include_directories(${EAZYAI_ARM_POSTPROCESS_LIB_NAME} PRIVATE ${EAZYAI_ARM_POSTPROCESS_INC})
+target_link_libraries(${EAZYAI_ARM_POSTPROCESS_LIB_NAME} ${LUA_INC_PATH}/liblua.a)
+set_target_properties(${EAZYAI_ARM_POSTPROCESS_LIB_NAME} PROPERTIES LINKER_LANGUAGE CXX)
+if (NOT DISABLE_OPENCV)  # Use "cmake -DDISABLE_OPENCV=Y .." to disable opencv related functions
+	add_definitions(-DBUILD_AMBARELLA_EAZYAI_PACKAGE_OPENCV_SUPPORT)
+endif ()
+find_package(Boost REQUIRED)
+target_link_libraries(${EAZYAI_ARM_POSTPROCESS_LIB_NAME} ${Boost_LIBS})
+target_link_libraries(${EAZYAI_ARM_POSTPROCESS_LIB_NAME} ${OpenCV_LIBS})
+
+# Compile executable test_eazyai
+aux_source_directory(${PROJECT_SOURCE_DIR}/nn_input EAZYAI_UNIT_TEST_NN_INPUT_SRC)
+set(EAZYAI_UNIT_TEST_SRC ${EAZYAI_UNIT_TEST_NN_INPUT_SRC}
+	${PROJECT_SOURCE_DIR}/nn_cvflow_task/nn_cvflow.c 
+	# ${PROJECT_SOURCE_DIR}/nn_thread/post_thread.c test_eazyai.c
+	${PROJECT_SOURCE_DIR}/yolov8_class.cpp
+	${PROJECT_SOURCE_DIR}/nn_thread/post_thread.c test_yolov8.cpp)
+
+add_executable(${PROJECT_NAME} ${EAZYAI_UNIT_TEST_SRC})
+target_include_directories(${PROJECT_NAME} PRIVATE ${PROJECT_SOURCE_DIR}/nn_cvflow_task
+	${PROJECT_SOURCE_DIR}/nn_arm_task ${PROJECT_SOURCE_DIR}/nn_thread nn_input)
+target_link_libraries(${PROJECT_NAME} ${EA_LIB_PATH})
+target_link_libraries(${PROJECT_NAME} ${EAZYAI_ARM_POSTPROCESS_LIB_NAME})
+target_link_libraries(${PROJECT_NAME} pthread)
+add_definitions(-DEA_MACH_SIMULATOR)
+add_definitions(-DEIGEN_MPL2_ONLY)  # For Eigen library to use MPL2 license related part only
