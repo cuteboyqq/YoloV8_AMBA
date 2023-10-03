@@ -29,7 +29,7 @@ int main(int argc, char **argv)
 		sig_flag = yolov8.test_yolov8_run(&live_ctx, &params); //RVAL_OK
 	} while (sig_flag==0);
 
-	yolov8.live_deinit(&live_ctx, &params);
+	yolov8.test_yolov8_deinit(&live_ctx, &params);
 
 	return rval;
 }

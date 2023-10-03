@@ -46,6 +46,9 @@ class YoloV8_Class
         void live_deinit(live_ctx_t *live_ctx, 
                         live_params_t *params);
 
+        void test_yolov8_deinit(live_ctx_t *live_ctx, 
+                        live_params_t *params);
+
 
 	private:
         int parse_param(int argc, char **argv, 
@@ -54,7 +57,7 @@ class YoloV8_Class
         int check_params(live_params_t *params);
   
         void live_set_post_thread_params(live_params_t *params,
-	                                    post_thread_params_t *post_params);
+	                                post_thread_params_t *post_params);
         
         
         int cv_env_init(live_ctx_t *live_ctx, 
@@ -68,13 +71,13 @@ class YoloV8_Class
 	                            vp_output_t **vp_output);
         
         int live_run_loop_dummy(live_ctx_t *live_ctx, 
-                                        live_params_t *params);
+                                live_params_t *params);
 
         int live_convert_yuv_data_to_bgr_data_for_postprocess(live_params_t *params, 
                                                             img_set_t *img_set);
 
         int live_run_loop_without_dummy(live_ctx_t *live_ctx, 
-                                                live_params_t *params);
+                                        live_params_t *params);
 
         
 };

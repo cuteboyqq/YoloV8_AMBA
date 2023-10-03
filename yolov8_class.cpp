@@ -533,6 +533,15 @@ void YoloV8_Class::live_deinit(live_ctx_t *live_ctx, live_params_t *params)
 		close(live_ctx->f_result);
 		live_ctx->f_result = -1;
 	}
+}
+void YoloV8_Class::test_yolov8_deinit(live_ctx_t *live_ctx, live_params_t *params){
+	post_thread_deinit(&live_ctx->thread_ctx, &live_ctx->nn_cvflow);
+	nn_cvflow_deinit(&live_ctx->nn_cvflow);
+	cv_env_deinit(live_ctx);
+	if (live_ctx->f_result > -1) {
+		close(live_ctx->f_result);
+		live_ctx->f_result = -1;
+	}
 };
 
 int YoloV8_Class::live_update_net_output(live_ctx_t *live_ctx,
