@@ -4,7 +4,7 @@
  ******************************************************************************/
 #include "yolov8_class.h"
 
-YoloV8_Class()
+YoloV8_Class::YoloV8_Class()
 {
 
 };
@@ -16,7 +16,7 @@ YoloV8_Class()
 
 // }
 
-static int YoloV8_Class::parse_param(int argc, char **argv, live_params_t *params)
+int YoloV8_Class::parse_param(int argc, char **argv, live_params_t *params)
 {
 	int rval = EA_SUCCESS;
 	int ch;
@@ -272,7 +272,7 @@ static int YoloV8_Class::parse_param(int argc, char **argv, live_params_t *param
 	return rval;
 };
 
-static int YoloV8_Class::check_params(live_params_t *params)
+int YoloV8_Class::check_params(live_params_t *params)
 {
 	int rval = EA_SUCCESS;
 	do {
@@ -377,7 +377,8 @@ int YoloV8_Class::init_param(int argc, char **argv, live_params_t *params)
 
 	return rval;
 };
-static void YoloV8_Class::live_set_post_thread_params(live_params_t *params,
+
+void YoloV8_Class::live_set_post_thread_params(live_params_t *params,
 	post_thread_params_t *post_params)
 {
 	post_params->label_path = params->label_path;
@@ -401,7 +402,7 @@ static void YoloV8_Class::live_set_post_thread_params(live_params_t *params,
 	}
 };
 
-static int YoloV8_Class::cv_env_init(live_ctx_t *live_ctx, live_params_t *params)
+int YoloV8_Class::cv_env_init(live_ctx_t *live_ctx, live_params_t *params)
 {
 	int rval = EA_SUCCESS;
 	nn_input_ops_type_t *ops = NULL;
@@ -430,7 +431,7 @@ static int YoloV8_Class::cv_env_init(live_ctx_t *live_ctx, live_params_t *params
 			strncpy(ctx->multi_in_params[i],
 				params->multi_in_params[i], MAX_STR_LEN);
 		}
-		ctx->ops = nn_intput_get_ops(params->mode);
+		ctx->ops = nn_intput_get_ops(run_mode_t(params->mode));
 		RVAL_ASSERT(ctx->ops != NULL);
 		ops = ctx->ops;
 		RVAL_ASSERT(ops->nn_input_init != NULL);
@@ -438,6 +439,8 @@ static int YoloV8_Class::cv_env_init(live_ctx_t *live_ctx, live_params_t *params
 	} while (0);
 	return rval;
 };
+
+
 
 int YoloV8_Class::live_init(live_ctx_t *live_ctx, live_params_t *params)
 {
@@ -454,7 +457,7 @@ int YoloV8_Class::live_init(live_ctx_t *live_ctx, live_params_t *params)
 			live_ctx->f_result = open(params->result_f_path, O_CREAT | O_RDWR | O_TRUNC, 0644);
 			RVAL_ASSERT(live_ctx->f_result != -1);
 		}
-		RVAL_OK(YoloV8_Class::cv_env_init(live_ctx, params));
+		RVAL_OK(cv_env_init(live_ctx, params));
 		ops = live_ctx->nn_input_ctx.ops;
 		RVAL_ASSERT(params->model_path != NULL);
 		memset(&net_params, 0, sizeof(nn_cvflow_params_t));
@@ -479,7 +482,7 @@ int YoloV8_Class::live_init(live_ctx_t *live_ctx, live_params_t *params)
 	return rval;
 };
 
-static void YoloV8_Class::cv_env_deinit(live_ctx_t *live_ctx)
+void YoloV8_Class::cv_env_deinit(live_ctx_t *live_ctx)
 {
 	nn_input_ops_type_t *ops = NULL;
 	ops = live_ctx->nn_input_ctx.ops;
@@ -489,7 +492,7 @@ static void YoloV8_Class::cv_env_deinit(live_ctx_t *live_ctx)
 	}
 };
 
-static void YoloV8_Class::live_deinit(live_ctx_t *live_ctx, live_params_t *params)
+void YoloV8_Class::live_deinit(live_ctx_t *live_ctx, live_params_t *params)
 {
 	post_thread_deinit(&live_ctx->thread_ctx, &live_ctx->nn_cvflow);
 	nn_cvflow_deinit(&live_ctx->nn_cvflow);
@@ -500,7 +503,7 @@ static void YoloV8_Class::live_deinit(live_ctx_t *live_ctx, live_params_t *param
 	}
 };
 
-static int YoloV8_Class::live_update_net_output(live_ctx_t *live_ctx,
+int YoloV8_Class::live_update_net_output(live_ctx_t *live_ctx,
 	vp_output_t **vp_output)
 {
 	int rval = EA_SUCCESS;
@@ -521,7 +524,7 @@ static int YoloV8_Class::live_update_net_output(live_ctx_t *live_ctx,
 	return rval;
 };
 
-static int YoloV8_Class::live_run_loop_dummy(live_ctx_t *live_ctx, live_params_t *params)
+int YoloV8_Class::live_run_loop_dummy(live_ctx_t *live_ctx, live_params_t *params)
 {
 	int rval = EA_SUCCESS;
 	ea_calc_fps_ctx_t calc_fps_ctx;
@@ -561,7 +564,7 @@ static int YoloV8_Class::live_run_loop_dummy(live_ctx_t *live_ctx, live_params_t
 	return rval;
 };
 
-static int YoloV8_Class::live_convert_yuv_data_to_bgr_data_for_postprocess(live_params_t *params, img_set_t *img_set)
+int YoloV8_Class::live_convert_yuv_data_to_bgr_data_for_postprocess(live_params_t *params, img_set_t *img_set)
 {
 	int rval = EA_SUCCESS;
 	size_t shape[EA_DIM] = {0};
@@ -590,7 +593,7 @@ static int YoloV8_Class::live_convert_yuv_data_to_bgr_data_for_postprocess(live_
 	return rval;
 };
 
-static int YoloV8_Class::live_run_loop_without_dummy(live_ctx_t *live_ctx, live_params_t *params)
+int YoloV8_Class::live_run_loop_without_dummy(live_ctx_t *live_ctx, live_params_t *params)
 {
 	int rval = EA_SUCCESS;
 	int i = 0;

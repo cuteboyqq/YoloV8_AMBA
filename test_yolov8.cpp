@@ -22,7 +22,6 @@ int main(int argc, char **argv)
 	memset(&live_ctx, 0, sizeof(live_ctx_t));
 
 	YoloV8_Class yolov8;
-	
 	do {
 		yolov8.init_param(argc, argv, &params); //RVAL_OK
 		yolov8.live_init(&live_ctx, &params); //RVAL_OK
