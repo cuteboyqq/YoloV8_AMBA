@@ -8,7 +8,14 @@
 class YoloV8_Class
 {
     public:
-        
+        live_params_t *params;
+        live_ctx_t *live_ctx;
+
+        // static void sig_stop(int a)
+        // {
+        //         (void)a;
+        //         live_ctx.sig_flag = 1;
+        // };
         YoloV8_Class();
 
         YoloV8_Class(int argc, 
@@ -16,7 +23,8 @@ class YoloV8_Class
                         live_params_t *params,
                         live_ctx_t *live_ctx);
 
-        // ~YoloV8_Class();
+        ~YoloV8_Class();
+
         int test_yolov8_init(int argc, 
                 char **argv, 
                 live_params_t *params,
@@ -40,12 +48,17 @@ class YoloV8_Class
         int test_yolov8_run(live_ctx_t *live_ctx, 
                         live_params_t *params);
 
+        int test_yolov8_run();
+
 
         Object test_yolov8_tracker(live_ctx_t *live_ctx, 
                         live_params_t *params);
 
-        Object Get_yolov8_Bounding_Boxes(live_ctx_t *live_ctx, 
-                        live_params_t *params);
+        std::vector<BoundingBox> Get_yolov8_Bounding_Boxes(live_ctx_t *live_ctx, 
+                        live_params_t *params,
+                        std::vector<BoundingBox> bboxList);
+
+        std::vector<BoundingBox> Get_yolov8_Bounding_Boxes(std::vector<BoundingBox> bboxList);
 
 
         int live_run_loop(live_ctx_t *live_ctx, 

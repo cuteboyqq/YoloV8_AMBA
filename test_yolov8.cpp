@@ -18,24 +18,34 @@ int main(int argc, char **argv)
 	//test_eazyai_params_t params;
 	live_params_t params;
 
-	signal(SIGINT, sig_stop);
-	signal(SIGQUIT, sig_stop);
-	signal(SIGTERM, sig_stop);
+	// signal(SIGINT, sig_stop);
+	// signal(SIGQUIT, sig_stop);
+	// signal(SIGTERM, sig_stop);
 
-	memset(&live_ctx, 0, sizeof(live_ctx_t));
+	//memset(&live_ctx, 0, sizeof(live_ctx_t));
 
 	int sig_flag = 0;
-	YoloV8_Class yolov8;
-	Object obj;
-	yolov8.test_yolov8_init(argc, argv, &params, &live_ctx);
-	printf("start do while function~~~");
+	std::vector<BoundingBox> bboxList;
+	static live_ctx_t live_ctx;
+
+	YoloV8_Class yolov8(argc, argv, &params, &live_ctx);
+
 	do {
-		sig_flag = yolov8.test_yolov8_run(&live_ctx, &params); //RVAL_OK
-		printf("start tracker function~~~");
-		obj = yolov8.Get_yolov8_Bounding_Boxes(&live_ctx, &params);
+		sig_flag = yolov8.test_yolov8_run(); //RVAL_OK
+		
+		bboxList.clear();
+		bboxList = yolov8.Get_yolov8_Bounding_Boxes(bboxList);
+
+		for (unsigned int i=0;i<bboxList.size();i++)
+		{
+			printf("%d",bboxList[i].x1);
+			printf("%d",bboxList[i].y1);
+			printf("%d",bboxList[i].x2);
+			printf("%d",bboxList[i].y2);
+		}
 	} while (sig_flag==0);
 
-	yolov8.test_yolov8_deinit(&live_ctx, &params);
+	//yolov8.test_yolov8_deinit(&live_ctx, &params);
 
 	return rval;
 }

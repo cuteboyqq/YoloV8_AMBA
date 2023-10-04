@@ -175,17 +175,11 @@ typedef struct live_ctx_s {
 
 EA_LOG_DECLARE_LOCAL(EA_LOG_LEVEL_NOTICE);
 EA_MEASURE_TIME_DECLARE();
-static live_ctx_t live_ctx;
+//static live_ctx_t live_ctx;
 
 #define	NO_ARG	0
 #define	HAS_ARG	1
 
-
-static void sig_stop(int a)
-{
-	(void)a;
-	live_ctx.sig_flag = 1;
-}
 
 typedef enum live_numeric_short_options_e {
 	OPTION_MODEL_PATH,
