@@ -6,6 +6,9 @@
  *
  ******************************************************************************/
 #include "yolov8_class.h"
+#include "yolov8_utils/object.hpp"
+#include "yolov8_utils/point.hpp"
+#include "yolov8_utils/bounding_box.hpp"
 using namespace std;
 
 
@@ -23,11 +26,13 @@ int main(int argc, char **argv)
 
 	int sig_flag = 0;
 	YoloV8_Class yolov8;
+	Object obj;
 	yolov8.test_yolov8_init(argc, argv, &params, &live_ctx);
-
+	printf("start do while function~~~");
 	do {
 		sig_flag = yolov8.test_yolov8_run(&live_ctx, &params); //RVAL_OK
-		yolov8.test_yolov8_tracker(&live_ctx, &params);
+		printf("start tracker function~~~");
+		obj = yolov8.Get_yolov8_Bounding_Boxes(&live_ctx, &params);
 	} while (sig_flag==0);
 
 	yolov8.test_yolov8_deinit(&live_ctx, &params);

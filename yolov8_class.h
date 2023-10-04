@@ -3,6 +3,7 @@
  *
  ******************************************************************************/
 #include "yolov8_struct.h"
+#include "yolov8_utils/object.hpp"
 
 class YoloV8_Class
 {
@@ -40,7 +41,10 @@ class YoloV8_Class
                         live_params_t *params);
 
 
-        int test_yolov8_tracker(live_ctx_t *live_ctx, 
+        Object test_yolov8_tracker(live_ctx_t *live_ctx, 
+                        live_params_t *params);
+
+        Object Get_yolov8_Bounding_Boxes(live_ctx_t *live_ctx, 
                         live_params_t *params);
 
 

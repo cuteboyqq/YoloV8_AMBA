@@ -3,7 +3,9 @@
  *
  ******************************************************************************/
 #include "yolov8_class.h"
-
+#include "yolov8_utils/object.hpp"
+#include "yolov8_utils/point.hpp"
+#include "yolov8_utils/bounding_box.hpp"
 
 YoloV8_Class::YoloV8_Class()
 {
@@ -513,10 +515,12 @@ int YoloV8_Class::test_yolov8_run(live_ctx_t *live_ctx, live_params_t *params)
 	// return rval;
 	return sig_flag;
 }
-int YoloV8_Class::test_yolov8_tracker(live_ctx_t *live_ctx, live_params_t *params)
+Object YoloV8_Class::test_yolov8_tracker(live_ctx_t *live_ctx, live_params_t *params)
 {
+	Object obj;
  	yolov8_result_t *yolov8_result = (yolov8_result_t *)live_ctx->thread_ctx.thread->nn_arm_ctx.result;
 	int i = 0;
+	printf("in tracker function~~~");
 	for ( i = 0; i < yolov8_result->num; i++)
 	{
 		EA_LOG_DEBUG("num:%d, id:%d, x1:%f, y1:%f, x2:%f, y2:%f, score:%f, label:%s\n",
@@ -538,8 +542,72 @@ int YoloV8_Class::test_yolov8_tracker(live_ctx_t *live_ctx, live_params_t *param
 		yolov8_result->bbox[i].y_end,
 		yolov8_result->bbox[i].score,
 		yolov8_result->bbox[i].label);
+
+		obj.bboxList.push_back(BoundingBox(yolov8_result->bbox[i].x_start,
+								yolov8_result->bbox[i].y_start,
+								yolov8_result->bbox[i].x_end,
+								yolov8_result->bbox[i].y_end,
+								yolov8_result->bbox[i].id));
+
+		
+		
+
 	}
-    return 0;
+	for (int i=0;i<obj.bboxList.size();i++)
+		{
+			printf("%s",obj.bboxList[i].x1);
+			printf("%s",obj.bboxList[i].y1);
+			printf("%s",obj.bboxList[i].x2);
+			printf("%s",obj.bboxList[i].y2);
+		}
+    return obj;
+}
+Object YoloV8_Class::Get_yolov8_Bounding_Boxes(live_ctx_t *live_ctx, live_params_t *params)
+{
+    Object obj;
+ 	yolov8_result_t *yolov8_result = (yolov8_result_t *)live_ctx->thread_ctx.thread->nn_arm_ctx.result;
+	int i = 0;
+	printf("in tracker function~~~");
+	for ( i = 0; i < yolov8_result->num; i++)
+	{
+		EA_LOG_DEBUG("num:%d, id:%d, x1:%f, y1:%f, x2:%f, y2:%f, score:%f, label:%s\n",
+		yolov8_result->num,
+		yolov8_result->bbox[i].id,
+		yolov8_result->bbox[i].x_start,
+		yolov8_result->bbox[i].y_start,
+		yolov8_result->bbox[i].x_end,
+		yolov8_result->bbox[i].y_end,
+		yolov8_result->bbox[i].score,
+		yolov8_result->bbox[i].label);
+		
+		printf("num:%d, id:%d, x1:%f, y1:%f, x2:%f, y2:%f, score:%f, label:%s\n",
+		yolov8_result->num,
+		yolov8_result->bbox[i].id,
+		yolov8_result->bbox[i].x_start,
+		yolov8_result->bbox[i].y_start,
+		yolov8_result->bbox[i].x_end,
+		yolov8_result->bbox[i].y_end,
+		yolov8_result->bbox[i].score,
+		yolov8_result->bbox[i].label);
+
+		obj.bboxList.push_back(BoundingBox(yolov8_result->bbox[i].x_start,
+								yolov8_result->bbox[i].y_start,
+								yolov8_result->bbox[i].x_end,
+								yolov8_result->bbox[i].y_end,
+								yolov8_result->bbox[i].id));
+
+		
+		
+
+	}
+	for (int i=0;i<obj.bboxList.size();i++)
+		{
+			printf("%s",obj.bboxList[i].x1);
+			printf("%s",obj.bboxList[i].y1);
+			printf("%s",obj.bboxList[i].x2);
+			printf("%s",obj.bboxList[i].y2);
+		}
+    return obj;
 };
 
 void YoloV8_Class::cv_env_deinit(live_ctx_t *live_ctx)
