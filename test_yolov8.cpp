@@ -35,14 +35,14 @@ int main(int argc, char **argv)
 		
 		bboxList.clear();
 		bboxList = yolov8.Get_yolov8_Bounding_Boxes(bboxList);
-
-		for (unsigned int i=0;i<bboxList.size();i++)
-		{
-			printf("%d",bboxList[i].x1);
-			printf("%d",bboxList[i].y1);
-			printf("%d",bboxList[i].x2);
-			printf("%d",bboxList[i].y2);
-		}
+		yolov8.Draw_Yolov8_Bounding_Boxes(bboxList);
+		// for (unsigned int i=0;i<bboxList.size();i++)
+		// {
+		// 	printf("%d",bboxList[i].x1);
+		// 	printf("%d",bboxList[i].y1);
+		// 	printf("%d",bboxList[i].x2);
+		// 	printf("%d",bboxList[i].y2);
+		// }
 	} while (sig_flag==0);
 
 	//yolov8.test_yolov8_deinit(&live_ctx, &params);

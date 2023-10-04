@@ -6,7 +6,7 @@
 #include "yolov8_utils/object.hpp"
 #include "yolov8_utils/point.hpp"
 #include "yolov8_utils/bounding_box.hpp"
-
+using namespace cv;
 YoloV8_Class::YoloV8_Class()
 {
 
@@ -681,6 +681,32 @@ std::vector<BoundingBox> YoloV8_Class::Get_yolov8_Bounding_Boxes(std::vector<Bou
 			printf("%d",bboxList[i].y2);
 		}
     return bboxList;
+}
+
+void YoloV8_Class::Draw_Yolov8_Bounding_Boxes(std::vector<BoundingBox> bboxList){
+	int dis_win_h = live_ctx->thread_ctx.roi->h;
+	int dis_win_w = live_ctx->thread_ctx.roi->w;
+	cv::Mat img(dis_win_h, dis_win_w, CV_8UC3,live_ctx->thread_ctx.input_queue );
+	for (int i=0;i<int(bboxList.size());i++)
+		{
+			int bbox_start_x = bboxList[i].x1;
+			int bbox_start_y = bboxList[i].y1;
+			int bbox_end_x = bboxList[i].x2;
+			int bbox_end_y = bboxList[i].y2;
+
+			//cv::rectangle()
+			cv::Point pt1(bbox_start_x, bbox_start_y);
+			cv::Point pt2(bbox_end_x, bbox_end_y );
+			cv::rectangle(img, pt1, pt2, cv::Scalar(255,127,0), -1, cv::LINE_4);
+			
+		}
+	cv::imshow("test", img);
+  
+    // Wait for any keystroke
+    cv::waitKey(0);
+	cv::imwrite("./test_2023_10_04.jpg", img);
+
+
 };
 
 void YoloV8_Class::cv_env_deinit(live_ctx_t *live_ctx)

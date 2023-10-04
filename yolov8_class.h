@@ -4,6 +4,10 @@
  ******************************************************************************/
 #include "yolov8_struct.h"
 #include "yolov8_utils/object.hpp"
+#include "opencv2/core.hpp"
+#include "opencv2/imgproc.hpp"
+#include "opencv2/highgui.hpp"
+#include <opencv2/opencv.hpp>
 
 class YoloV8_Class
 {
@@ -60,6 +64,7 @@ class YoloV8_Class
 
         std::vector<BoundingBox> Get_yolov8_Bounding_Boxes(std::vector<BoundingBox> bboxList);
 
+        void Draw_Yolov8_Bounding_Boxes(std::vector<BoundingBox> bboxList);
 
         int live_run_loop(live_ctx_t *live_ctx, 
                         live_params_t *params);
