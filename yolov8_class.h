@@ -64,7 +64,7 @@ class YoloV8_Class
 
         std::vector<BoundingBox> Get_yolov8_Bounding_Boxes(std::vector<BoundingBox> bboxList);
 
-        void Draw_Yolov8_Bounding_Boxes(std::vector<BoundingBox> bboxList);
+        void Draw_Yolov8_Bounding_Boxes(std::vector<BoundingBox> bboxList,live_ctx_t *live_ctx);
 
         int live_run_loop(live_ctx_t *live_ctx, 
                         live_params_t *params);

@@ -39,7 +39,8 @@ int main(int argc, char **argv)
 		printf("sig_flag = %d\n",sig_flag);
 		bboxList.clear();
 		bboxList = yolov8.Get_yolov8_Bounding_Boxes(&live_ctx, &params, bboxList);
-		//yolov8.Draw_Yolov8_Bounding_Boxes(bboxList);
+		
+		yolov8.Draw_Yolov8_Bounding_Boxes(bboxList,&live_ctx);
 		// for (unsigned int i=0;i<bboxList.size();i++)
 		// {
 		// 	printf("%d",bboxList[i].x1);
