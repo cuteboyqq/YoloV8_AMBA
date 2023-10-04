@@ -49,7 +49,7 @@ class YoloV8_Class
                     live_params_t *params);
 
 
-        int test_yolov8_run(live_ctx_t *live_ctx, 
+        int test_yolov8_run_2(live_ctx_t *live_ctx, 
                         live_params_t *params);
 
         int test_yolov8_run();
