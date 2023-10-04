@@ -139,6 +139,9 @@ aux_source_directory(${PROJECT_SOURCE_DIR}/nn_input EAZYAI_UNIT_TEST_NN_INPUT_SR
 set(EAZYAI_UNIT_TEST_SRC ${EAZYAI_UNIT_TEST_NN_INPUT_SRC}
 	${PROJECT_SOURCE_DIR}/nn_cvflow_task/nn_cvflow.c 
 	# ${PROJECT_SOURCE_DIR}/nn_thread/post_thread.c test_eazyai.c
+	${PROJECT_SOURCE_DIR}/yolov8_utils/bounding_box.cpp
+	${PROJECT_SOURCE_DIR}/yolov8_utils/object.cpp
+	${PROJECT_SOURCE_DIR}/yolov8_utils/point.cpp
 	${PROJECT_SOURCE_DIR}/yolov8_class.cpp
 	${PROJECT_SOURCE_DIR}/nn_thread/post_thread.c test_yolov8.cpp)
 
