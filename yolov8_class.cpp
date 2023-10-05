@@ -702,7 +702,6 @@ void YoloV8_Class::Draw_Yolov8_Bounding_Boxes(std::vector<BoundingBox> bboxList,
 	// nn_arm_context_t *ctx;
 	//live_ctx->thread_ctx.thread->nn_arm_ctx.roi->w;
 	// live_ctx->thread_ctx.thread->nn_arm_ctx.input
-	
 	// yolov8_ctx.input_w = ea_tensor_shape(live_ctx->thread_ctx.thread->nn_arm_ctx.input)[EA_W];
 	// yolov8_ctx.input_h = ea_tensor_shape(live_ctx->thread_ctx.thread->nn_arm_ctx.input)[EA_H];
 	// yolov8_ctx.input_w = ea_tensor_shape(live_ctx->thread_ctx.thread->nn_arm_ctx.input)[0];
@@ -731,7 +730,6 @@ void YoloV8_Class::Draw_Yolov8_Bounding_Boxes(std::vector<BoundingBox> bboxList,
 	//printf("[Draw_Yolov8_Bounding_Boxes]imshow \n");
 	// EA_LOG_NOTICE("sdfsdfsdfsdfsdwerrwerwerwerwefdsdfsd");
 	//cv::imshow("test", img);
-	
     // Wait for any keystroke
     //cv::waitKey(0);
 	// EA_LOG_NOTICE("sdfsdfsdfsdfsdfdsdfsd");
