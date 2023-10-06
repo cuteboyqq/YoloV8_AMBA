@@ -709,24 +709,22 @@ void YoloV8_Class::Draw_Yolov8_Bounding_Boxes(std::vector<BoundingBox> &bboxList
 	// nn_arm_context_t *ctx;
 	//live_ctx->thread_ctx.thread->nn_arm_ctx.roi->w;
 	// live_ctx->thread_ctx.thread->nn_arm_ctx.input
-	// yolov8_ctx.input_w = ea_tensor_shape(live_ctx->thread_ctx.thread->nn_arm_ctx.input)[EA_W];
-	// yolov8_ctx.input_h = ea_tensor_shape(live_ctx->thread_ctx.thread->nn_arm_ctx.input)[EA_H];
-	// yolov8_ctx.input_w = ea_tensor_shape(live_ctx->thread_ctx.thread->nn_arm_ctx.input)[0];
-	// yolov8_ctx.input_h = ea_tensor_shape(live_ctx->thread_ctx.thread->nn_arm_ctx.input)[1];
-	int dis_win_h = 1080; //= ea_tensor_shape(ctx->input)[EA_W];
-	int dis_win_w = 810; //=ea_tensor_shape(ctx->input)[EA_H];
-	// int dis_win_h = live_ctx->thread_ctx.input_ctx->roi.h
-	// int dis_win_w = 500;
-	printf("dis_win_h=%d,dis_win_w=%d\n ",dis_win_h,dis_win_w);
+
+	// int dis_win_h = 1080; //= ea_tensor_shape(ctx->input)[EA_W];
+	// int dis_win_w = 810; //=ea_tensor_shape(ctx->input)[EA_H];
+	
+	
 	printf("[Draw_Yolov8_Bounding_Boxes] start initial img \n");
-	// cv::Mat img(dis_win_h, dis_win_w, CV_8UC3,live_ctx->thread_ctx.input_queue );
-	// cv::Mat img(dis_win_h, dis_win_w, CV_8UC3,live_ctx->thread_ctx.thread->nn_arm_ctx.input );
-	// cv::Mat img(dis_win_h, dis_win_w, CV_8UC3,cv::Scalar::all(0));
-	// live_ctx->thread_ctx.img_set->img
+	
 	ea_tensor_t *tensor = live_ctx->thread_ctx.thread->nn_arm_ctx.bgr;
 	cv::Mat bgr;
+	
 	rval = tensor2mat_bgr2bgr(tensor, bgr);
+	int dis_win_h = bgr.rows;
+	int dis_win_w = bgr.cols;
+	printf("dis_win_h=%d,dis_win_w=%d\n ",dis_win_h,dis_win_w);
 	cv::Mat img(dis_win_h, dis_win_w, CV_8UC3,cv::Scalar::all(0));
+	
 	do{
 		
 		cout << "dbg e" << endl;
