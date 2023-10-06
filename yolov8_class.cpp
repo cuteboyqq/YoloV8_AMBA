@@ -12,8 +12,19 @@ YoloV8_Class::YoloV8_Class()
 
 };
 
+YoloV8_Class::YoloV8_Class(int argc, char **argv)
+{
+	YoloV8_Class::params = new live_params_t;
+	YoloV8_Class::live_ctx = new live_ctx_t;
+	int rval = 0;
+	rval = YoloV8_Class::init_param(argc, argv, YoloV8_Class::params);
+	rval = YoloV8_Class::live_init(YoloV8_Class::live_ctx, YoloV8_Class::params);
+}
+
 YoloV8_Class::YoloV8_Class(int argc, char **argv, live_params_t *params, live_ctx_t *live_ctx)
 {
+	// params = new live_params_t;
+	// live_ctx = new live_ctx_t;
 	int rval = 0;
 	rval = YoloV8_Class::init_param(argc, argv, params);
 	rval = YoloV8_Class::live_init(live_ctx, params);
@@ -301,7 +312,8 @@ int YoloV8_Class::parse_param(int argc, char **argv, live_params_t *params)
 	} while (0);
 
 	return rval;
-};
+}
+
 
 int YoloV8_Class::check_params(live_params_t *params)
 {
@@ -537,10 +549,10 @@ int YoloV8_Class::test_yolov8_run()
 		printf("In test_yolov8_run , start if (params->mode == RUN_DUMMY_MODE) \n");
 		if (params->mode == RUN_DUMMY_MODE) {
 			printf("Start live_run_loop_dummy\n");
-			sig_flag = YoloV8_Class::live_run_loop_dummy(live_ctx, params); //RVAL_OK
+			sig_flag = YoloV8_Class::live_run_loop_dummy(YoloV8_Class::live_ctx, YoloV8_Class::params); //RVAL_OK
 		} else {
 			printf("Start live_run_loop_without_dummy\n");
-			sig_flag = YoloV8_Class::live_run_loop_without_dummy(live_ctx, params); //RVAL_OK
+			sig_flag = YoloV8_Class::live_run_loop_without_dummy(YoloV8_Class::live_ctx, YoloV8_Class::params); //RVAL_OK
 		}
 	} while (0);
 	// return rval;
@@ -649,11 +661,11 @@ std::vector<BoundingBox> YoloV8_Class::Get_yolov8_Bounding_Boxes(live_ctx_t *liv
 std::vector<BoundingBox> YoloV8_Class::Get_yolov8_Bounding_Boxes(std::vector<BoundingBox> bboxList)
 {
      //Object obj;
-	 printf("start nitial yolov8_result~~~\n");
- 	yolov8_result_t *yolov8_result = (yolov8_result_t *)live_ctx->thread_ctx.thread->nn_arm_ctx.result;
-	printf("End nitial yolov8_result~~~\n");
+	 printf("start initial yolov8_result~~~\n");
+ 	yolov8_result_t *yolov8_result = (yolov8_result_t *)YoloV8_Class::live_ctx->thread_ctx.thread->nn_arm_ctx.result;
+	printf("End initial yolov8_result~~~\n");
 	int i = 0;
-	printf("in tracker function~~~");
+	printf("in tracker function~~~\n");
 	for ( i = 0; i < yolov8_result->num; i++)
 	{
 		EA_LOG_DEBUG("num:%d, id:%d, x1:%f, y1:%f, x2:%f, y2:%f, score:%f, label:%s\n",
@@ -686,17 +698,59 @@ std::vector<BoundingBox> YoloV8_Class::Get_yolov8_Bounding_Boxes(std::vector<Bou
 		
 
 	}
-	printf("print BB~~~~~~~~~~~~~~~~~~");
-	for (int i=0;i<int(bboxList.size());i++)
-		{
-			printf("%d",bboxList[i].x1);
-			printf("%d",bboxList[i].y1);
-			printf("%d",bboxList[i].x2);
-			printf("%d",bboxList[i].y2);
+	printf("print BB~~~~~~~~~~~~~~~~~~\n");
+	printf("Show bboxList ~~~~~~\n");
+	for (int i=0;i<bboxList.size();i++)
+		{	
+			printf("%f, %f, %f, %f, %d\n",bboxList[i].x1,
+										bboxList[i].y1,
+										bboxList[i].x2,
+										bboxList[i].y2,
+										bboxList[i].label);
 		}
     return bboxList;
 }
-
+void YoloV8_Class::Draw_Yolov8_Bounding_Boxes(std::vector<BoundingBox> bboxList){
+	printf("[Draw_Yolov8_Bounding_Boxes] Get dis_win_h and w\n");
+	// nn_arm_context_t *ctx;
+	//live_ctx->thread_ctx.thread->nn_arm_ctx.roi->w;
+	// live_ctx->thread_ctx.thread->nn_arm_ctx.input
+	// yolov8_ctx.input_w = ea_tensor_shape(live_ctx->thread_ctx.thread->nn_arm_ctx.input)[EA_W];
+	// yolov8_ctx.input_h = ea_tensor_shape(live_ctx->thread_ctx.thread->nn_arm_ctx.input)[EA_H];
+	// yolov8_ctx.input_w = ea_tensor_shape(live_ctx->thread_ctx.thread->nn_arm_ctx.input)[0];
+	// yolov8_ctx.input_h = ea_tensor_shape(live_ctx->thread_ctx.thread->nn_arm_ctx.input)[1];
+	int dis_win_h = 1080; //= ea_tensor_shape(ctx->input)[EA_W];
+	int dis_win_w = 810; //=ea_tensor_shape(ctx->input)[EA_H];
+	// int dis_win_h = live_ctx->thread_ctx.input_ctx->roi.h
+	// int dis_win_w = 500;
+	printf("dis_win_h=%d,dis_win_w=%d\n ",dis_win_h,dis_win_w);
+	printf("[Draw_Yolov8_Bounding_Boxes] start initial img \n");
+	// cv::Mat img(dis_win_h, dis_win_w, CV_8UC3,live_ctx->thread_ctx.input_queue );
+	// cv::Mat img(dis_win_h, dis_win_w, CV_8UC3,live_ctx->thread_ctx.thread->nn_arm_ctx.input );
+	// cv::Mat img(dis_win_h, dis_win_w, CV_8UC3,cv::Scalar::all(0));
+	// live_ctx->thread_ctx.img_set->img
+	cv::Mat img(dis_win_h, dis_win_w, CV_8UC3,YoloV8_Class::live_ctx->thread_ctx.input_queue);
+	printf("[Draw_Yolov8_Bounding_Boxes] End initial img\n");
+	for (int i=0;i<int(bboxList.size());i++)
+		{
+			int bbox_start_x = bboxList[i].x1 * dis_win_w;
+			int bbox_start_y = bboxList[i].y1 * dis_win_h;
+			int bbox_end_x = bboxList[i].x2 * dis_win_w;
+			int bbox_end_y = bboxList[i].y2 * dis_win_h;
+			//cv::rectangle()
+			cv::Point pt1(bbox_start_x, bbox_start_y);
+			cv::Point pt2(bbox_end_x, bbox_end_y );
+			cv::rectangle(img, pt1, pt2, cv::Scalar(255,127,0),1,1,0);
+		}
+	//printf("[Draw_Yolov8_Bounding_Boxes]imshow \n");
+	// EA_LOG_NOTICE("sdfsdfsdfsdfsdwerrwerwerwerwefdsdfsd");
+	//cv::imshow("test", img);
+    // Wait for any keystroke
+    //cv::waitKey(0);
+	// EA_LOG_NOTICE("sdfsdfsdfsdfsdfdsdfsd");
+	printf("[Draw_Yolov8_Bounding_Boxes]imwrite \n");
+	cv::imwrite("./test_2023_10_04.jpg", img);
+};
 void YoloV8_Class::Draw_Yolov8_Bounding_Boxes(std::vector<BoundingBox> bboxList, live_ctx_t *live_ctx, live_params_t *params)
 {
 	printf("[Draw_Yolov8_Bounding_Boxes] Get dis_win_h and w\n");
@@ -707,13 +761,17 @@ void YoloV8_Class::Draw_Yolov8_Bounding_Boxes(std::vector<BoundingBox> bboxList,
 	// yolov8_ctx.input_h = ea_tensor_shape(live_ctx->thread_ctx.thread->nn_arm_ctx.input)[EA_H];
 	// yolov8_ctx.input_w = ea_tensor_shape(live_ctx->thread_ctx.thread->nn_arm_ctx.input)[0];
 	// yolov8_ctx.input_h = ea_tensor_shape(live_ctx->thread_ctx.thread->nn_arm_ctx.input)[1];
-	int dis_win_h = 1000; //= ea_tensor_shape(ctx->input)[EA_W];
-	int dis_win_w = 500; //=ea_tensor_shape(ctx->input)[EA_H];
+	int dis_win_h = 1080; //= ea_tensor_shape(ctx->input)[EA_W];
+	int dis_win_w = 810; //=ea_tensor_shape(ctx->input)[EA_H];
 	// int dis_win_h = live_ctx->thread_ctx.input_ctx->roi.h
 	// int dis_win_w = 500;
 	printf("dis_win_h=%d,dis_win_w=%d\n ",dis_win_h,dis_win_w);
 	printf("[Draw_Yolov8_Bounding_Boxes] start initial img \n");
-	cv::Mat img(dis_win_h, dis_win_w, CV_8UC3,live_ctx->thread_ctx.input_queue );
+	// cv::Mat img(dis_win_h, dis_win_w, CV_8UC3,live_ctx->thread_ctx.input_queue );
+	// cv::Mat img(dis_win_h, dis_win_w, CV_8UC3,live_ctx->thread_ctx.thread->nn_arm_ctx.input );
+	// cv::Mat img(dis_win_h, dis_win_w, CV_8UC3,cv::Scalar::all(0));
+	// live_ctx->thread_ctx.img_set->img
+	cv::Mat img(dis_win_h, dis_win_w, CV_8UC3,live_ctx->thread_ctx.img_set->img);
 	printf("[Draw_Yolov8_Bounding_Boxes] End initial img\n");
 	for (int i=0;i<int(bboxList.size());i++)
 		{
@@ -759,6 +817,18 @@ void YoloV8_Class::live_deinit(live_ctx_t *live_ctx, live_params_t *params)
 		live_ctx->f_result = -1;
 	}
 }
+
+void YoloV8_Class::test_yolov8_deinit()
+{
+		post_thread_deinit( &YoloV8_Class::live_ctx->thread_ctx, &YoloV8_Class::live_ctx->nn_cvflow);
+	nn_cvflow_deinit(&YoloV8_Class::live_ctx->nn_cvflow);
+	cv_env_deinit(YoloV8_Class::live_ctx);
+	if (YoloV8_Class::live_ctx->f_result > -1) {
+		close(YoloV8_Class::live_ctx->f_result);
+		YoloV8_Class::live_ctx->f_result = -1;
+	}
+};
+
 void YoloV8_Class::test_yolov8_deinit(live_ctx_t *live_ctx, live_params_t *params){
 	post_thread_deinit(&live_ctx->thread_ctx, &live_ctx->nn_cvflow);
 	nn_cvflow_deinit(&live_ctx->nn_cvflow);
@@ -873,19 +943,19 @@ int YoloV8_Class::live_run_loop_without_dummy(live_ctx_t *live_ctx, live_params_
 	nn_input_ops_type_t *ops = NULL;
 	memset(&calc_fps_ctx, 0, sizeof(ea_calc_fps_ctx_t));
 	int fps_notice_flag = 0;
-	printf("In live_run_loop_without_dummy \n");
+	printf("[live_run_loop_without_dummy]In live_run_loop_without_dummy \n");
 	do {
 		RVAL_ASSERT(live_ctx != NULL);
 		ops = live_ctx->nn_input_ctx.ops;
 		RVAL_ASSERT(ops->nn_input_hold_data != NULL);
-		printf("Start live_update_net_output\n");
+		printf("[live_run_loop_without_dummy]Start live_update_net_output\n");
 		RVAL_OK(YoloV8_Class::live_update_net_output(live_ctx, &vp_output));
-		printf("end live_update_net_output\n");
-		printf("Start post_thread_get_img_set\n");
+		printf("[live_run_loop_without_dummy]end live_update_net_output\n");
+		printf("[live_run_loop_without_dummy]Start post_thread_get_img_set\n");
 		img_set = post_thread_get_img_set(&live_ctx->thread_ctx, live_ctx->seq);
-		printf("end post_thread_get_img_set\n");
+		printf("[live_run_loop_without_dummy]end post_thread_get_img_set\n");
 		live_ctx->seq++;
-		printf("start for  i < live_ctx->nn_cvflow.in_num\n");
+		printf("[live_run_loop_without_dummy]start for  i < live_ctx->nn_cvflow.in_num\n");
 		for (i = 0; i < live_ctx->nn_cvflow.in_num; i++) {
 			RVAL_OK(ops->nn_input_hold_data(&live_ctx->nn_input_ctx,
 				i, nn_cvflow_input(&live_ctx->nn_cvflow, i), &(img_set->img[i])));
@@ -895,18 +965,18 @@ int YoloV8_Class::live_run_loop_without_dummy(live_ctx_t *live_ctx, live_params_
 				break;
 			}
 		}
-		printf("end for  i < live_ctx->nn_cvflow.in_num\n");
+		printf("[live_run_loop_without_dummy]end for  i < live_ctx->nn_cvflow.in_num\n");
 		RVAL_BREAK();
-		printf("live_ctx->sig_flag = %d\n",live_ctx->sig_flag);
+		printf("[live_run_loop_without_dummy]live_ctx->sig_flag = %d\n",live_ctx->sig_flag);
 		if (live_ctx->sig_flag) {
 			break;
 		}
-		printf("start live_convert_yuv_data_to_bgr_data_for_postprocess\n");
+		printf("[live_run_loop_without_dummy]start live_convert_yuv_data_to_bgr_data_for_postprocess\n");
 		if (params->mode == RUN_LIVE_MODE &&
 			params->enable_hold_img_flag == IN_SRC_ON) {
 			RVAL_OK(YoloV8_Class::live_convert_yuv_data_to_bgr_data_for_postprocess(params, img_set));
 		}
-		printf("end live_convert_yuv_data_to_bgr_data_for_postprocess\n");
+		printf("[live_run_loop_without_dummy]end live_convert_yuv_data_to_bgr_data_for_postprocess\n");
 		vp_output->arg = img_set;
 		EA_MEASURE_TIME_START();
 		RVAL_OK(nn_cvflow_inference(&live_ctx->nn_cvflow));
@@ -930,13 +1000,13 @@ int YoloV8_Class::live_run_loop_without_dummy(live_ctx_t *live_ctx, live_params_
 			RVAL_OK(ea_tensor_sync_cache(vp_output->out[i].out, EA_VP, EA_CPU));
 		}
 		RVAL_BREAK();
-		printf("start post_thread_queue\n");
+		printf("[live_run_loop_without_dummy]start post_thread_queue\n");
 		queue = post_thread_queue(&live_ctx->thread_ctx);
-		printf("end post_thread_queue = %d\n",queue);
+		printf("[live_run_loop_without_dummy]end post_thread_queue = %d\n",queue);
 		RVAL_OK(ea_queue_en(queue, vp_output));
 
 	} while (0);
-	printf("end while\n");
+	printf("[live_run_loop_without_dummy]end while\n");
 	// return rval;
 	return live_ctx->sig_flag;
 };
@@ -954,7 +1024,5 @@ int YoloV8_Class::live_run_loop(live_ctx_t *live_ctx, live_params_t *params)
 	} while (0);
 	// return rval;
 	return sig_flag;
-};
-
-
+}
 

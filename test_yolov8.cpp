@@ -17,8 +17,8 @@ int main(int argc, char **argv)
 	int rval = 0;
 	//test_eazyai_params_t params;
 	printf("Create parameters~~~~\n");
-	live_params_t params;
-	static live_ctx_t live_ctx;
+	// live_params_t params;
+	// static live_ctx_t live_ctx;
 	// signal(SIGINT, sig_stop);
 	// signal(SIGQUIT, sig_stop);
 	// signal(SIGTERM, sig_stop);
@@ -26,16 +26,25 @@ int main(int argc, char **argv)
 	int sig_flag = 0;
 	std::vector<BoundingBox> bboxList;
 	printf("Generate YoloV8_Class constructor~~~~\n");
-	YoloV8_Class yolov8(argc, argv, &params, &live_ctx);
+	// YoloV8_Class yolov8(argc, argv, &params, &live_ctx);
+
 	// YoloV8_Class yolov8;
 	// yolov8.test_yolov8_init(argc, argv, &params, &live_ctx);
+	YoloV8_Class yolov8(argc,argv);
+	// yolov8.test_yolov8_init(argc,argv);
+	
 	do {
-		sig_flag = yolov8.test_yolov8_run_2(&live_ctx,&params); //RVAL_OK
+		// sig_flag = yolov8.test_yolov8_run_2(&live_ctx,&params); //RVAL_OK
+		sig_flag = yolov8.test_yolov8_run(); //RVAL_OK
 		bboxList.clear();
-		bboxList = yolov8.Get_yolov8_Bounding_Boxes(&live_ctx, &params, bboxList);
-		yolov8.Draw_Yolov8_Bounding_Boxes(bboxList,&live_ctx, &params);
+		// bboxList = yolov8.Get_yolov8_Bounding_Boxes(&live_ctx, &params, bboxList);
+		bboxList = yolov8.Get_yolov8_Bounding_Boxes(bboxList);
+		// bboxList = yolov8.Get_yolov8_Bounding_Boxes(bboxList);
+		// yolov8.Draw_Yolov8_Bounding_Boxes(bboxList,&live_ctx, &params);
+		yolov8.Draw_Yolov8_Bounding_Boxes(bboxList);
 	} while (sig_flag==0);
-	yolov8.test_yolov8_deinit(&live_ctx, &params);
+	// yolov8.test_yolov8_deinit(&live_ctx, &params);
+	yolov8.test_yolov8_deinit();
 
 	return rval;
 }
