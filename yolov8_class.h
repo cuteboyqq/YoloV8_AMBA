@@ -23,6 +23,8 @@ class YoloV8_Class
         // };
         YoloV8_Class();
 
+        ~YoloV8_Class();
+
 
         YoloV8_Class(int argc, 
                         char **argv);
@@ -31,8 +33,6 @@ class YoloV8_Class
                         char **argv,
                         live_params_t *params,
                         live_ctx_t *live_ctx);
-
-        ~YoloV8_Class();
 
         int test_yolov8_init(int argc, 
                 char **argv, 
@@ -67,7 +67,7 @@ class YoloV8_Class
                         live_params_t *params,
                         std::vector<BoundingBox> bboxList);
 
-        std::vector<BoundingBox> Get_yolov8_Bounding_Boxes(std::vector<BoundingBox> bboxList);
+        std::vector<BoundingBox> Get_Yolov8_Bounding_Boxes(std::vector<BoundingBox> bboxList);
 
 
         void Draw_Yolov8_Bounding_Boxes(std::vector<BoundingBox> bboxList,live_ctx_t *live_ctx, live_params_t *params);

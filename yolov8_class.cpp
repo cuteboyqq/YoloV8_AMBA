@@ -31,12 +31,12 @@ YoloV8_Class::YoloV8_Class(int argc, char **argv, live_params_t *params, live_ct
 }
 YoloV8_Class::~YoloV8_Class()
 {
-	post_thread_deinit(&live_ctx->thread_ctx, &live_ctx->nn_cvflow);
-	nn_cvflow_deinit(&live_ctx->nn_cvflow);
-	cv_env_deinit(live_ctx);
-	if (live_ctx->f_result > -1) {
-		close(live_ctx->f_result);
-		live_ctx->f_result = -1;
+	post_thread_deinit( &YoloV8_Class::live_ctx->thread_ctx, &YoloV8_Class::live_ctx->nn_cvflow);
+	nn_cvflow_deinit(&YoloV8_Class::live_ctx->nn_cvflow);
+	cv_env_deinit(YoloV8_Class::live_ctx);
+	if (YoloV8_Class::live_ctx->f_result > -1) {
+		close(YoloV8_Class::live_ctx->f_result);
+		YoloV8_Class::live_ctx->f_result = -1;
 	}
 }
 
@@ -639,11 +639,7 @@ std::vector<BoundingBox> YoloV8_Class::Get_yolov8_Bounding_Boxes(live_ctx_t *liv
 								yolov8_result->bbox[i].y_start,
 								yolov8_result->bbox[i].x_end,
 								yolov8_result->bbox[i].y_end,
-								yolov8_result->bbox[i].id));
-
-		
-		
-
+								yolov8_result->bbox[i].id));	
 	}
 	printf("Show bboxList ~~~~~~\n");
 	for (int i=0;i<bboxList.size();i++)
@@ -658,7 +654,9 @@ std::vector<BoundingBox> YoloV8_Class::Get_yolov8_Bounding_Boxes(live_ctx_t *liv
 		}
     return bboxList;
 }
-std::vector<BoundingBox> YoloV8_Class::Get_yolov8_Bounding_Boxes(std::vector<BoundingBox> bboxList)
+
+
+std::vector<BoundingBox> YoloV8_Class::Get_Yolov8_Bounding_Boxes(std::vector<BoundingBox> bboxList)
 {
      //Object obj;
 	 printf("start initial yolov8_result~~~\n");
@@ -693,9 +691,6 @@ std::vector<BoundingBox> YoloV8_Class::Get_yolov8_Bounding_Boxes(std::vector<Bou
 								yolov8_result->bbox[i].x_end,
 								yolov8_result->bbox[i].y_end,
 								yolov8_result->bbox[i].id));
-
-		
-		
 
 	}
 	printf("print BB~~~~~~~~~~~~~~~~~~\n");
@@ -743,13 +738,10 @@ void YoloV8_Class::Draw_Yolov8_Bounding_Boxes(std::vector<BoundingBox> bboxList)
 			cv::rectangle(img, pt1, pt2, cv::Scalar(255,127,0),1,1,0);
 		}
 	//printf("[Draw_Yolov8_Bounding_Boxes]imshow \n");
-	// EA_LOG_NOTICE("sdfsdfsdfsdfsdwerrwerwerwerwefdsdfsd");
 	//cv::imshow("test", img);
-    // Wait for any keystroke
     //cv::waitKey(0);
-	// EA_LOG_NOTICE("sdfsdfsdfsdfsdfdsdfsd");
 	printf("[Draw_Yolov8_Bounding_Boxes]imwrite \n");
-	cv::imwrite("./test_2023_10_04.jpg", img);
+	cv::imwrite("./test_2023_10_06.jpg", img);
 };
 void YoloV8_Class::Draw_Yolov8_Bounding_Boxes(std::vector<BoundingBox> bboxList, live_ctx_t *live_ctx, live_params_t *params)
 {

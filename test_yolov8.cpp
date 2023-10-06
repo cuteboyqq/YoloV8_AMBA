@@ -25,26 +25,27 @@ int main(int argc, char **argv)
 	// memset(&live_ctx, 0, sizeof(live_ctx_t));
 	int sig_flag = 0;
 	std::vector<BoundingBox> bboxList;
-	printf("Generate YoloV8_Class constructor~~~~\n");
+	printf("Generate YoloV8_Class constructor~~~~2023-10-06-13:56\n");
+	YoloV8_Class yolov8(argc,argv);
 	// YoloV8_Class yolov8(argc, argv, &params, &live_ctx);
-
 	// YoloV8_Class yolov8;
 	// yolov8.test_yolov8_init(argc, argv, &params, &live_ctx);
-	YoloV8_Class yolov8(argc,argv);
 	// yolov8.test_yolov8_init(argc,argv);
-	
 	do {
 		// sig_flag = yolov8.test_yolov8_run_2(&live_ctx,&params); //RVAL_OK
 		sig_flag = yolov8.test_yolov8_run(); //RVAL_OK
 		bboxList.clear();
 		// bboxList = yolov8.Get_yolov8_Bounding_Boxes(&live_ctx, &params, bboxList);
-		bboxList = yolov8.Get_yolov8_Bounding_Boxes(bboxList);
+		bboxList = yolov8.Get_Yolov8_Bounding_Boxes(bboxList);
 		// bboxList = yolov8.Get_yolov8_Bounding_Boxes(bboxList);
-		// yolov8.Draw_Yolov8_Bounding_Boxes(bboxList,&live_ctx, &params);
 		yolov8.Draw_Yolov8_Bounding_Boxes(bboxList);
+		// yolov8.Draw_Yolov8_Bounding_Boxes(bboxList,&live_ctx, &params);
+		
 	} while (sig_flag==0);
+
+	// Use deconstructor instead of deinit function
 	// yolov8.test_yolov8_deinit(&live_ctx, &params);
-	yolov8.test_yolov8_deinit();
+	// yolov8.test_yolov8_deinit();
 
 	return rval;
 }
