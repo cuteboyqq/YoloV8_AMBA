@@ -637,10 +637,11 @@ std::vector<BoundingBox> YoloV8_Class::Get_yolov8_Bounding_Boxes(live_ctx_t *liv
 	for (int i=0;i<bboxList.size();i++)
 		{	
 			
-			printf("%f, %f, %f, %f \n",bboxList[i].x1,
+			printf("%f, %f, %f, %f, %d\n",bboxList[i].x1,
 										bboxList[i].y1,
 										bboxList[i].x2,
-										bboxList[i].y2);
+										bboxList[i].y2,
+										bboxList[i].label);
 		
 		}
     return bboxList;

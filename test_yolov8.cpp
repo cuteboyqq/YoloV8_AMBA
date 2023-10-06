@@ -16,7 +16,9 @@ int main(int argc, char **argv)
 {
 	int rval = 0;
 	//test_eazyai_params_t params;
+	printf("Create parameters~~~~\n");
 	live_params_t params;
+	static live_ctx_t live_ctx;
 	// signal(SIGINT, sig_stop);
 	// signal(SIGQUIT, sig_stop);
 	// signal(SIGTERM, sig_stop);
