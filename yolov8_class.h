@@ -67,12 +67,16 @@ class YoloV8_Class
                         live_params_t *params,
                         std::vector<BoundingBox> bboxList);
 
-        std::vector<BoundingBox> Get_Yolov8_Bounding_Boxes(std::vector<BoundingBox> bboxList);
+        int Get_Yolov8_Bounding_Boxes(std::vector<BoundingBox> &bboxList);
 
 
         void Draw_Yolov8_Bounding_Boxes(std::vector<BoundingBox> bboxList,live_ctx_t *live_ctx, live_params_t *params);
 
-        void Draw_Yolov8_Bounding_Boxes(std::vector<BoundingBox> bboxList);
+        void Draw_Yolov8_Bounding_Boxes(std::vector<BoundingBox> &bboxList);
+
+
+        int tensor2mat_bgr2bgr(ea_tensor_t *tensor, 
+                                        cv::Mat &bgr);
 
         int live_run_loop(live_ctx_t *live_ctx, 
                         live_params_t *params);
