@@ -20,12 +20,13 @@ int main(int argc, char **argv)
 	// signal(SIGINT, sig_stop);
 	// signal(SIGQUIT, sig_stop);
 	// signal(SIGTERM, sig_stop);
-	memset(&live_ctx, 0, sizeof(live_ctx_t));
+	// memset(&live_ctx, 0, sizeof(live_ctx_t));
 	int sig_flag = 0;
 	std::vector<BoundingBox> bboxList;
-	// YoloV8_Class yolov8(argc, argv, &params, &live_ctx);
-	YoloV8_Class yolov8;
-	yolov8.test_yolov8_init(argc, argv, &params, &live_ctx);
+	printf("Generate YoloV8_Class constructor~~~~\n");
+	YoloV8_Class yolov8(argc, argv, &params, &live_ctx);
+	// YoloV8_Class yolov8;
+	// yolov8.test_yolov8_init(argc, argv, &params, &live_ctx);
 	do {
 		sig_flag = yolov8.test_yolov8_run_2(&live_ctx,&params); //RVAL_OK
 		bboxList.clear();
