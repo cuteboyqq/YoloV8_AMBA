@@ -60,6 +60,11 @@ class YoloV8_Class
         int test_yolov8_run();
 
 
+        void yolov8_thread_join();
+
+
+        cv::Mat Get_img();
+
         Object test_yolov8_tracker(live_ctx_t *live_ctx, 
                         live_params_t *params);
 
@@ -72,10 +77,19 @@ class YoloV8_Class
 
         void Draw_Yolov8_Bounding_Boxes(std::vector<BoundingBox> bboxList,live_ctx_t *live_ctx, live_params_t *params);
 
-        void Draw_Yolov8_Bounding_Boxes(std::vector<BoundingBox> &bboxList);
+        void Draw_Yolov8_Bounding_Boxes(std::vector<BoundingBox> &bboxList, 
+                                        int c, 
+                                        cv::Mat img);
 
 
         int tensor2mat_bgr2bgr(ea_tensor_t *tensor, 
+                                        cv::Mat &bgr);
+
+
+        int tensor2mat_rgb2bgr(ea_tensor_t *tensor,
+                                cv::Mat &bgr);
+
+        int tensor2mat_yuv2bgr_nv12(ea_tensor_t *tensor, 
                                         cv::Mat &bgr);
 
         int live_run_loop(live_ctx_t *live_ctx, 

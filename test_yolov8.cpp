@@ -15,43 +15,35 @@ using namespace std;
 int main(int argc, char **argv)
 {
 	int rval = 0;
-	//test_eazyai_params_t params;
-	printf("Create parameters~~~~\n");
-	// live_params_t params;
-	// static live_ctx_t live_ctx;
-	// signal(SIGINT, sig_stop);
-	// signal(SIGQUIT, sig_stop);
-	// signal(SIGTERM, sig_stop);
-	// memset(&live_ctx, 0, sizeof(live_ctx_t));
 	int sig_flag = 0;
 	std::vector<BoundingBox> bboxList;
-	printf("Generate YoloV8_Class constructor~~~~2023-10-06-13:56\n");
 	YoloV8_Class yolov8(argc,argv);
-	// YoloV8_Class yolov8(argc, argv, &params, &live_ctx);
-	// YoloV8_Class yolov8;
-	// yolov8.test_yolov8_init(argc, argv, &params, &live_ctx);
-	// yolov8.test_yolov8_init(argc,argv);
-
+	int c = 0;
+	ea_tensor_t *tensor;
+	img_set_t *img_set;
+	img_set = new img_set_t;
+	// tensor = new ea_tensor_t;
 	do
 	{
-		// sig_flag = yolov8.test_yolov8_run_2(&live_ctx,&params); //RVAL_OK
+		//img = XXX.getFrame()
+		cv::Mat img;
+		cout<<"Start yolov8.Get_img"<<endl;
+		img = yolov8.Get_img();
+		cout<<"End olov8.Get_img"<<endl;
 		sig_flag = yolov8.test_yolov8_run(); //RVAL_OK
-
+		// cout<<"Start yolov8.yolov8_thread_join()"<<endl;
+		// yolov8.yolov8_thread_join();
+		// tensor = yolov8.live_ctx->thread_ctx.thread[0].nn_arm_ctx.bgr;
 		cout << "sig_flag = " << sig_flag << endl;
-
-		if (sig_flag == 1 )
-		{
-			bboxList.clear();
-			// bboxList = yolov8.Get_yolov8_Bounding_Boxes(&live_ctx, &params, bboxList);
-			yolov8.Get_Yolov8_Bounding_Boxes(bboxList);
-			// bboxList = yolov8.Get_yolov8_Bounding_Boxes(bboxList);
-			yolov8.Draw_Yolov8_Bounding_Boxes(bboxList);
-			// yolov8.Draw_Yolov8_Bounding_Boxes(bboxList,&live_ctx, &params);
-		}
-
-		// Use deconstructor instead of deinit function
-		// yolov8.test_yolov8_deinit(&live_ctx, &params);
-		// yolov8.test_yolov8_deinit();
+		bboxList.clear();
+	
+		yolov8.Get_Yolov8_Bounding_Boxes(bboxList);
+		printf("c = %d\n",c);
+		cout<<"Start yolov8.Draw_Yolov8_Bounding_Boxes"<<endl;
+		yolov8.Draw_Yolov8_Bounding_Boxes(bboxList,c,img);
+		
+		
+		c+=1;
 	}while(sig_flag==0);
 
 	return rval;
